@@ -4,6 +4,14 @@ module.exports = {
     "app.js": [
       "javascripts/app.js"
     ],
+    "server.js": [
+      "node/prepare.js",
+      "node/server.js"
+    ],
+    "listen.js": [
+      "node/prepare.js",
+      "node/listen.js"
+    ],
     "app.css": [
       "stylesheets/app.css"
     ],
