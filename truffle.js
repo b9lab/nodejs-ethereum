@@ -4,11 +4,11 @@ module.exports = {
     "app.js": [
       "javascripts/app.js"
     ],
-    "server.js": [
+    "node/server.js": [
       "node/prepare.js",
       "node/server.js"
     ],
-    "listen.js": [
+    "node/listen.js": [
       "node/prepare.js",
       "node/listen.js"
     ],

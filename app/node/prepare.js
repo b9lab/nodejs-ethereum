@@ -1,7 +1,7 @@
 const Web3 = require("web3");
-const ConvertLib = require("./contracts/ConvertLib.sol.js");
-const MetaCoin = require("./contracts/MetaCoin.sol.js");
-const Migrations = require("./contracts/Migrations.sol.js");
+const ConvertLib = require(__dirname + "/../contracts/ConvertLib.sol.js");
+const MetaCoin = require(__dirname + "/../contracts/MetaCoin.sol.js");
+const Migrations = require(__dirname + "/../contracts/Migrations.sol.js");
 
 // Supports Mist, and other wallets that provide 'web3'.
 if (typeof web3 !== 'undefined') {
