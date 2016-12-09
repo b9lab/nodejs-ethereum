@@ -17,9 +17,9 @@ if (typeof web3 !== 'undefined') {
 
 console.log(web3.eth.accounts);
 MetaCoin.deployed().getBalance.call(web3.eth.accounts[0])
-	.then(function (balance) {
-		console.log("balance: " + balance.toString(10));
-	})
-	.catch(function (err) {
-		console.error(err);
-	});
+    .then(function (balance) {
+        console.log("balance: " + balance.toString(10));
+    })
+    .catch(function (err) {
+        console.error(err);
+    });
