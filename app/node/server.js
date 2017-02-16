@@ -70,18 +70,21 @@ Http.createServer(function(request,response){
             if (!EthUtil.isValidAddress(toWhom)) {
                 badRequest(response, toWhom + " is not a valid address");
             } else {
-                MetaCoin.deployed()
-                    .sendCoin.sendTransaction(toWhom, 1, { from: web3.eth.accounts[0] })
-                    .then(function (txHash) {
-                        response.writeHeader(200, {"Content-Type": "application/json"});
-                        response.write(JSON.stringify({
-                            txHash: txHash
-                        }));
-                        response.end();
-                    })
-                    .catch(function (err) {
-                        serverError(response, err);
-                    });
+                web3.eth.getAccountsPromise()
+                    .then(function (accounts) {
+                        return MetaCoin.deployed()
+                            .sendCoin.sendTransaction(toWhom, 1, { from: accounts[0] })
+                            .then(function (txHash) {
+                                response.writeHeader(200, {"Content-Type": "application/json"});
+                                response.write(JSON.stringify({
+                                    txHash: txHash
+                                }));
+                                response.end();
+                            })
+                            .catch(function (err) {
+                                serverError(response, err);
+                            });
+                    ])
             }
         } else {
             notFound(response);

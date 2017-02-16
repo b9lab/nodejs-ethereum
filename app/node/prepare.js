@@ -15,8 +15,27 @@ if (typeof web3 !== 'undefined') {
     contract.setProvider(web3.currentProvider);
 });
 
-console.log(web3.eth.accounts);
-MetaCoin.deployed().getBalance.call(web3.eth.accounts[0])
+web3.eth.getAccountsPromise = function() {
+    return new Promise(function (resolve, reject) {
+            try {
+                web3.eth.getAccounts(function (error, accounts) {
+                    if (error) {
+                        reject(error);
+                    } else {
+                        resolve(accounts);
+                    }
+                });
+            } catch(error) {
+                reject(error);
+            }
+        });
+}
+
+web3.eth.getAccountsPromise()
+    .then(function (accounts) {
+        console.log(web3.eth.accounts);
+        return MetaCoin.deployed().getBalance.call(web3.eth.accounts[0]);            
+    })
     .then(function (balance) {
         console.log("balance: " + balance.toString(10));
     })
