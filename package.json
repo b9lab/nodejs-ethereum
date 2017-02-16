@@ -4,7 +4,7 @@
     "private": true,
     "dependencies": {
         "web3": "Found here https://www.npmjs.com/package/web3",
-        "web3": "0.18.1",
+        "web3": "0.18.2",
         "ethereumjs-util": "5.0.1"
     }
 }
