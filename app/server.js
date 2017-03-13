@@ -1,8 +1,9 @@
 const Http = require("http");
 const Url = require("url");
+const prepared = require("./prepare.js");
 const EthUtil = require("ethereumjs-util");
 
-function serverError(response, err) {
+function serverError(err, response) {
     response.writeHeader(500, {"Content-Type": "text/plain"});
     response.write(err.toString());
     response.end();                    
@@ -13,13 +14,13 @@ function invalidMethod(response) {
     response.end();
 }
 
-function notFound(response, err) {
+function notFound(err, response) {
     response.writeHeader(404, {"Content-Type": "text/plain"});
     response.write(err.toString());
     response.end();
 }
 
-function badRequest(response, err) {
+function badRequest(err, response) {
     response.writeHeader(400, {"Content-Type": "text/plain"});
     response.write(err.toString());
     response.end();
@@ -34,9 +35,9 @@ Http.createServer(function(request,response){
             var txHash = pathname.slice(4, 70);
             web3.eth.getTransaction(txHash, function (err, tx) {
                 if (err) {
-                    serverError(response, err);
+                    serverError(err, response);
                 } else if (tx == null) {
-                    notFound(response, txHash + " is not a known transaction\n");
+                    notFound(txHash + " is not a known transaction\n", response);
                 } else {
                     response.writeHeader(200, {"Content-Type": "application/json"});
                     response.write(JSON.stringify(tx) + '\n');
@@ -46,10 +47,11 @@ Http.createServer(function(request,response){
         } else if (pathname.startsWith("/balance/")) {
             var who = pathname.slice(9, 51);
             if (!EthUtil.isValidAddress(who)) {
-                badRequest(response, who + " is not a valid address");
+                badRequest(who + " is not a valid address", response);
             } else {
-                MetaCoin.deployed().getBalance.call(who)
-                    .then(function (balance) {
+                prepared.MetaCoin.deployed()
+                    .then(instance => instance.getBalance.call(who))
+                    .then(balance => {
                         response.writeHeader(200, {"Content-Type": "application/json"});
                         response.write(JSON.stringify({
                             "address": who,
@@ -57,37 +59,34 @@ Http.createServer(function(request,response){
                         }) + '\n');
                         response.end();
                     })
-                    .catch(function (err) {
-                        serverError(response, err);
-                    });
+                    .catch(err => serverError(err, response));
             }
         } else {
-            notFound(response, "");
+            notFound("", response);
         }
     } else if (request.method == "PATCH") {
         if (pathname.startsWith("/sendOneTo/")) {
             var toWhom = pathname.slice(11, 53);
             if (!EthUtil.isValidAddress(toWhom)) {
-                badRequest(response, toWhom + " is not a valid address");
+                badRequest(toWhom + " is not a valid address", response);
             } else {
                 web3.eth.getAccountsPromise()
-                    .then(function (accounts) {
-                        return MetaCoin.deployed()
+                    .then(accounts => prepared.MetaCoin.deployed()
+                        .then(instance => instance
                             .sendCoin.sendTransaction(toWhom, 1, { from: accounts[0] })
-                            .then(function (txHash) {
-                                response.writeHeader(200, {"Content-Type": "application/json"});
-                                response.write(JSON.stringify({
-                                    txHash: txHash
-                                }));
-                                response.end();
-                            })
-                            .catch(function (err) {
-                                serverError(response, err);
-                            });
-                    ])
+                        )
+                        .then(txHash => {
+                            response.writeHeader(200, {"Content-Type": "application/json"});
+                            response.write(JSON.stringify({
+                                txHash: txHash
+                            }));
+                            response.end();
+                        })
+                    )
+                    .catch(err => serverError(err, response));
             }
         } else {
-            notFound(response);
+            notFound(pathname + " not found", response);
         }
     } else {
         invalidMethod(response);
