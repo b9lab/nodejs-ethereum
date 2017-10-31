@@ -1,6 +1,6 @@
 const prepared = require("./prepare.js");
 
-var listen = () => {
+const listen = () => {
     prepared.MetaCoin.deployed()
         .then(instance => {
                 return instance

@@ -11,7 +11,7 @@ if (typeof web3 !== 'undefined') {
         require('net')));
 }
 
-web3.eth.getAccounts((err, acc) => console.log("acc", acc));
+web3.eth.getAccounts(console.log);
 
 const truffleContractFactory = require("truffle-contract");
 // ABI and Truffle goodies

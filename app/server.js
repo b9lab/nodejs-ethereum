@@ -28,11 +28,11 @@ function badRequest(err, response) {
 
 Http.createServer(function(request,response){
     console.log(request.url);
-    var pathname = Url.parse(request.url).pathname;
+    const pathname = Url.parse(request.url).pathname;
 
     if (request.method == "GET") {
         if (pathname.startsWith("/tx/")) {
-            var txHash = pathname.slice(4, 70);
+            const txHash = pathname.slice(4, 70);
             web3.eth.getTransaction(txHash, function (err, tx) {
                 if (err) {
                     serverError(err, response);
@@ -45,7 +45,7 @@ Http.createServer(function(request,response){
                 }
             });
         } else if (pathname.startsWith("/balance/")) {
-            var who = pathname.slice(9, 51);
+            const who = pathname.slice(9, 51);
             if (!EthUtil.isValidAddress(who)) {
                 badRequest(who + " is not a valid address", response);
             } else {
@@ -62,27 +62,25 @@ Http.createServer(function(request,response){
                     .catch(err => serverError(err, response));
             }
         } else {
-            notFound("", response);
+            notFound(pathname + " not found", response);
         }
     } else if (request.method == "PATCH") {
         if (pathname.startsWith("/sendOneTo/")) {
-            var toWhom = pathname.slice(11, 53);
+            const toWhom = pathname.slice(11, 53);
             if (!EthUtil.isValidAddress(toWhom)) {
                 badRequest(toWhom + " is not a valid address", response);
             } else {
                 web3.eth.getAccountsPromise()
                     .then(accounts => prepared.MetaCoin.deployed()
                         .then(instance => instance
-                            .sendCoin.sendTransaction(toWhom, 1, { from: accounts[0] })
-                        )
-                        .then(txHash => {
-                            response.writeHeader(200, {"Content-Type": "application/json"});
-                            response.write(JSON.stringify({
-                                txHash: txHash
-                            }));
-                            response.end();
-                        })
-                    )
+                            .sendCoin.sendTransaction(toWhom, 1, { from: accounts[0] })))
+                    .then(txHash => {
+                        response.writeHeader(200, {"Content-Type": "application/json"});
+                        response.write(JSON.stringify({
+                            txHash: txHash
+                        }));
+                        response.end();
+                    })
                     .catch(err => serverError(err, response));
             }
         } else {
