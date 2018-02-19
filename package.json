@@ -4,8 +4,8 @@
     "private": true,
     "dependencies": {
         "web3": "Found here https://www.npmjs.com/package/web3",
-        "web3": "0.20.1",
-        "ethereumjs-util": "5.1.1",
-        "truffle-contract": "1.1.10"
+        "web3": "0.20.5",
+        "ethereumjs-util": "5.1.4",
+        "truffle-contract": "3.0.3"
     }
 }

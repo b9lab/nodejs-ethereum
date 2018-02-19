@@ -1,4 +1,5 @@
 const Web3 = require("web3");
+const net = require('net');
 
 // Good practice, we could have already defined web3.
 if (typeof web3 !== 'undefined') {
@@ -7,8 +8,7 @@ if (typeof web3 !== 'undefined') {
 } else {
     // Use IPC.
     web3 = new Web3(new Web3.providers.IpcProvider(
-        process.env['HOME'] + '/.ethereum/net42/geth.ipc',
-        require('net')));
+        process.env['HOME'] + '/.ethereum/net42/geth.ipc', net));
 }
 
 web3.eth.getAccounts(console.log);

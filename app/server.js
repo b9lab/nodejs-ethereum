@@ -33,7 +33,7 @@ Http.createServer(function(request,response){
     if (request.method == "GET") {
         if (pathname.startsWith("/tx/")) {
             const txHash = pathname.slice(4, 70);
-            web3.eth.getTransaction(txHash, function (err, tx) {
+            prepared.web3.eth.getTransaction(txHash, function (err, tx) {
                 if (err) {
                     serverError(err, response);
                 } else if (tx == null) {
@@ -70,7 +70,7 @@ Http.createServer(function(request,response){
             if (!EthUtil.isValidAddress(toWhom)) {
                 badRequest(toWhom + " is not a valid address", response);
             } else {
-                web3.eth.getAccountsPromise()
+                prepared.web3.eth.getAccountsPromise()
                     .then(accounts => prepared.MetaCoin.deployed()
                         .then(instance => instance
                             .sendCoin.sendTransaction(toWhom, 1, { from: accounts[0] })))

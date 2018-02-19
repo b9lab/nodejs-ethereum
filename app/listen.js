@@ -1,19 +1,14 @@
 const prepared = require("./prepare.js");
 
-const listen = () => {
-    prepared.MetaCoin.deployed()
-        .then(instance => {
-                return instance
-                    .Transfer(
-                        {},
-                        { fromBlock: 0, toBlock: "latest" })
-                    .watch((err, newEvent) => {
-                        err ? console.error(err) : console.log(newEvent);
-                    });
-            }
-        )
-        .catch(console.error);
-};
+const listen = () => prepared.MetaCoin.deployed()
+    .then(instance => instance.Transfer(
+            {},
+            { fromBlock: 0, toBlock: "latest" })
+        .watch((err, newEvent) => {
+            err ? console.error(err) : console.log(newEvent);
+        })
+    )
+    .catch(console.error);
 
 /**
  * Small hack to avoid a possible race condition on Web3's JsonRPC.messageId here:
